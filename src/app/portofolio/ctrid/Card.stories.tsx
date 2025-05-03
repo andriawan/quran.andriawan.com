@@ -13,8 +13,24 @@ export const CardDashboard: Story = {
   args: {
     label: "Ads Spent",
     amount: 9_000_200_000,
+    amounType: "currency",
     percentage: 30.33,
-    amountMode: "short",
+  },
+  render: (args) => (
+    <div className="flex flex-col justify-center items-center">
+      <div className="w-48">
+        <Card {...args} />
+      </div>
+    </div>
+  ),
+};
+
+export const CardDashboardLoading: Story = {
+  args: {
+    isLoading: true,
+    label: "Ads Spent",
+    amount: 9_000_200_000,
+    percentage: 30.33,
   },
   render: (args) => (
     <div className="flex flex-col justify-center items-center">
