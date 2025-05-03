@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import TaxBadgeChart from "./TaxBadgeChart";
 import ChevronDown from "./ChevronDown";
+import { formatNumberDisplay, formatShortNumber } from "@/shared/utility";
 
 interface CardProps {
   onClick?: () => void;
@@ -8,9 +9,11 @@ interface CardProps {
   bgCard?: string;
   amountClass: string;
   isLoading?: boolean;
-  amount?: number;
+  amount?: number | null;
+  amountMode: "normal" | "short";
+  amounType: "default" | "currency" | "percentage";
   label?: string;
-  percentage?: number;
+  percentage?: number | null;
   percentageState?: "negative" | "positive" | "neutral";
   currency?: string;
   isIncludeVat?: boolean;
@@ -24,19 +27,13 @@ export default function Card({
   label = "",
   amount = 0,
   percentage = 0,
+  amounType = "default",
   currency = "IDR",
   amountClass = "",
+  amountMode = "normal",
   percentageState = "neutral",
   bgCard = "bg-[#1E1F31]",
 }: CardProps) {
-  const loadingComponent = isLoading && (
-    <div>
-      <div className="absolute bg-gray-500 top-0 right-0 w-full h-full z-40 flex flex-col items-end justify-end rounded">
-        <div className="h-3 animate-pulse bg-slate-400 rounded-lg w-2/3 mx-1" />
-        <div className="h-3 animate-pulse bg-slate-400 rounded-lg mx-1 my-3 w-1/3" />
-      </div>
-    </div>
-  );
   const vatBadgeComponent = isIncludeVat && <TaxBadgeChart color="#2196F3" />;
   return (
     <div
@@ -47,27 +44,51 @@ export default function Card({
         bgCard ? bgCard : "bg-[#1E1F31]",
       )}
     >
-      {loadingComponent}
       <div className="absolute top-[-7px] right-[-7px] h-full z-30">
         {vatBadgeComponent}
       </div>
-      <div className="flex pb-2">
-        <div className="flex justify-end gap-1.5 cursor-pointer whitespace-nowrap overflow-hidden">
-          <ChevronDown className="w-[16px] h-[16px] flex-none" />
-          <p title={label} className="text-xs truncate w-full flex-1">
-            {label}
-          </p>
+      <div className="flex pb-2 w-full">
+        <div className="flex w-full justify-start gap-1.5 cursor-pointer whitespace-nowrap overflow-hidden">
+          {isLoading ? (
+            <div
+              className={clsx(
+                "w-full animate-pulse h-4 rounded opacity-15 bg-slate-500 mr-4 ",
+              )}
+            />
+          ) : (
+            <>
+              <ChevronDown className="w-[16px] h-[16px] flex-none" />
+              <p title={label} className="text-xs truncate w-full flex-1">
+                {label}
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div className="text-right">
         <p className={clsx("text-[20px]", amountClass)}>
-          <span className="text-[12px] text-gray-currency mr-1 font-extralight">
-            {currency}
-          </span>
-          {amount.toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-          })}
+          {isLoading ? (
+            <span
+              className={clsx(
+                "w-full animate-pulse rounded opacity-15 bg-slate-500 text-slate-500",
+              )}
+            >
+              Loading Data...
+            </span>
+          ) : (
+            <>
+              <span className="text-[12px] text-gray-currency mr-1 font-extralight">
+                {amounType === "currency" ? currency : ""}
+              </span>
+              <span title={amount?.toString()} className="hidden md:inline">
+                {amountMode === "short"
+                  ? formatShortNumber(amount)
+                  : formatNumberDisplay(amount)}
+                {amounType === "percentage" ? "%" : ""}
+              </span>
+              <span className="md:hidden">{formatShortNumber(amount)}</span>
+            </>
+          )}
         </p>
         <div
           className={clsx("text-[12px] h-5 text-green-600", {
@@ -76,18 +97,26 @@ export default function Card({
             "text-gray-400": percentageState === "neutral",
           })}
         >
-          <span className="leading-none">
-            {percentageState === "negative"
-              ? "-"
-              : percentageState === "positive"
-                ? "+"
-                : ""}
-            {percentage.toLocaleString("en-US", {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-            %
-          </span>
+          {isLoading ? (
+            <span
+              className={clsx(
+                "w-full animate-pulse rounded opacity-15 bg-slate-500 text-slate-500",
+              )}
+            >
+              Loading Data...
+            </span>
+          ) : (
+            <>
+              <span className="leading-none" title={percentage?.toString()}>
+                {percentageState === "negative"
+                  ? "-"
+                  : percentageState === "positive"
+                    ? "+"
+                    : ""}
+                {formatNumberDisplay(percentage)}%
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

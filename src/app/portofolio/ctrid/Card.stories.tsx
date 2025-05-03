@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Card from "./card";
+import Card from "./Card";
 
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof Card> = {
@@ -11,11 +11,13 @@ type Story = StoryObj<typeof Card>;
 
 export const CardDashboard: Story = {
   args: {
-    bgCard: "bg-green-400",
-    amountClass: "text-blue-500",
+    label: "Ads Spent",
+    amount: 9_000_200_000,
+    percentage: 30.33,
+    amountMode: "short",
   },
   render: (args) => (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center">
       <div className="w-48">
         <Card {...args} />
       </div>
