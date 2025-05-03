@@ -9,11 +9,4 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const ButtonStory: Story = {
-  args: {
-    text: "",
-    onClick: () => {
-      alert("hello");
-    },
-  },
-};
+export const ButtonStory: Story = {};

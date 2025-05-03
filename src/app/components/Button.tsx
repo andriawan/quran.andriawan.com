@@ -23,9 +23,9 @@ export default function Button({
   rounded = "none",
   type = "button",
 }: ButtonProps) {
-  let filteredText = text ? text : "hello";
+  let filteredText = text || "hello";
   if (isLoading) {
-    filteredText = loadingText ? loadingText : "Loading...";
+    filteredText = loadingText || "Loading...";
   }
   return (
     <button
