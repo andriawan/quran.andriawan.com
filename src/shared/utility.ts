@@ -14,3 +14,19 @@ export const formatNumberDisplay = (amount: number | null, fixed = 2): string =>
     maximumFractionDigits: fixed,
   });
 };
+
+export function randomElementBetween(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randomElementInArray<T>(array: T[]): T {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+
+export const generateArrayOfRandomNumber = (
+  length: number,
+  accumulator = 1000,
+) => {
+  return Array.from({ length }, () => Math.floor(Math.random() * accumulator));
+};
