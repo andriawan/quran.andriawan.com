@@ -1,9 +1,12 @@
+import { useWindowSize } from "@/shared/hooks/useWindowSize";
 import ReactECharts, { type EChartsReactProps } from "echarts-for-react";
+import { type RefObject, useEffect, useRef } from "react";
 
 export interface ChartProps {
   option: EChartsReactProps["option"];
   className?: string;
   height?: string;
+  onChartWidthChanged?: (width: number, instance: ReactECharts) => void;
   isLoading?: boolean;
 }
 
@@ -11,8 +14,15 @@ export default function Chart({
   option,
   height,
   isLoading = false,
+  onChartWidthChanged,
   ...props
 }: ChartProps) {
+  const echartsRef = useRef<InstanceType<typeof ReactECharts>>(null);
+  const [width] = useWindowSize();
+  useEffect(() => {
+    if (!echartsRef.current) return;
+    onChartWidthChanged?.(width, echartsRef.current);
+  }, [width, onChartWidthChanged]);
   return isLoading ? (
     <>
       <div className="flex justify-center items-end p-20 h-full gap-3">
@@ -29,6 +39,11 @@ export default function Chart({
       </div>
     </>
   ) : (
-    <ReactECharts option={option} {...props} style={{ height: height }} />
+    <ReactECharts
+      option={option}
+      {...props}
+      ref={echartsRef}
+      style={{ height: height }}
+    />
   );
 }
