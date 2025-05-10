@@ -3,7 +3,7 @@ import TaxBadgeChart from "./TaxBadgeChart";
 import ChevronDown from "./ChevronDown";
 import { formatNumberDisplay, formatShortNumber } from "@/shared/utility";
 
-interface CardProps {
+export interface CardProps {
   onClick?: () => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   bgCard?: string;
@@ -17,6 +17,7 @@ interface CardProps {
   percentageState?: "negative" | "positive" | "neutral";
   currency?: string;
   isIncludeVat?: boolean;
+  className?: string;
 }
 
 export default function Card({
@@ -33,6 +34,7 @@ export default function Card({
   amountMode = "normal",
   percentageState = "neutral",
   bgCard = "bg-[#1E1F31]",
+  className = "",
 }: CardProps) {
   const vatBadgeComponent = isIncludeVat && <TaxBadgeChart color="#2196F3" />;
   return (
@@ -42,6 +44,7 @@ export default function Card({
       className={clsx(
         " rounded relative cursor-pointer w-full p-3 text-white",
         bgCard ? bgCard : "bg-[#1E1F31]",
+        className,
       )}
     >
       <div className="absolute top-[-7px] right-[-7px] h-full z-30">
