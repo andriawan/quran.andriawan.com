@@ -1,6 +1,6 @@
 import ReactECharts, { type EChartsReactProps } from "echarts-for-react";
 
-interface ChartProps {
+export interface ChartProps {
   option: EChartsReactProps["option"];
   className?: string;
   height?: string;

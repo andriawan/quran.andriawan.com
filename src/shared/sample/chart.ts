@@ -180,10 +180,11 @@ export const chartOption = {
   ],
 };
 
-export const generateChartOption = () => {
+export const generateChartOption = (barWidth = 25) => {
   const dataLine = generateArrayOfRandomNumber(62, 100);
   const dataBar = generateArrayOfRandomNumber(62, 1000_000);
   chartOption.series[0].data = dataBar;
+  chartOption.series[0].barWidth = barWidth;
   chartOption.series[1].data = dataLine;
   chartOption.xAxis[0].data = generateDateLabel(62);
   return chartOption;
