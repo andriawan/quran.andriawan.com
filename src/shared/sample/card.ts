@@ -1,13 +1,7 @@
 import type { CardProps } from "@/app/portofolio/ctrid/Card";
+import { randomElementBetween, randomElementInArray } from "../utility";
 
-function randomElementBetween(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-function randomElementInArray<T>(array: T[]): T {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
-}
 
 export default function generateRandomCardData(number = 6): CardProps[] {
   const list = Array.from<number>({ length: number }).map<CardProps>(

@@ -1,11 +1,5 @@
-import { formatShortNumber } from "../utility";
-
-export const generateArrayOfRandomNumber = (
-  length: number,
-  accumulator = 1000,
-) => {
-  return Array.from({ length }, () => Math.floor(Math.random() * accumulator));
-};
+import clone from "just-clone";
+import { formatShortNumber, generateArrayOfRandomNumber, randomElementBetween } from "../utility";
 
 export const generateDateLabel = (days = 62, short = false) => {
   const startDate = new Date();
@@ -19,7 +13,7 @@ export const generateDateLabel = (days = 62, short = false) => {
   return labelDate;
 };
 
-export const chartOption = {
+export const chartOptionDefault = {
   left: "center",
   top: "-40px",
   grid: [{ x: "10%", y: "17%", height: "66%" }],
@@ -181,11 +175,18 @@ export const chartOption = {
 };
 
 export const generateChartOption = (barWidth = 25) => {
+  const chartOption = clone(chartOptionDefault);
   const dataLine = generateArrayOfRandomNumber(62, 100);
   const dataBar = generateArrayOfRandomNumber(62, 1000_000);
+  const lte = randomElementBetween(0, 20);
+  const gte = lte - randomElementBetween(1, 8);
   chartOption.series[0].data = dataBar;
   chartOption.series[0].barWidth = barWidth;
   chartOption.series[1].data = dataLine;
   chartOption.xAxis[0].data = generateDateLabel(62);
+  chartOption.visualMap[1].pieces[0].lte = lte;
+  chartOption.visualMap[0].pieces[0].lte = lte;
+  chartOption.visualMap[1].pieces[0].gte = gte;
+  chartOption.visualMap[0].pieces[0].gte = gte;
   return chartOption;
 };
