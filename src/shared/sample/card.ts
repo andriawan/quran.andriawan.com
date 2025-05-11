@@ -34,6 +34,7 @@ export default function generateRandomCardData(number = 6): CardProps[] {
         amounType: randomElementInArray(["default", "percentage", "currency"]),
         currency: randomElementInArray(["USD", "EUR", "IDR"]),
         percentage: randomElementBetween(1, 100),
+        comparedPercentage: randomElementBetween(1, 100),
         percentageState: randomElementInArray([
           "negative",
           "positive",

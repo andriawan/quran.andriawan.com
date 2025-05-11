@@ -31,6 +31,7 @@ export const CardDashboardLoading: Story = {
     label: "Ads Spent",
     amount: 9_000_200_000,
     percentage: 30.33,
+    comparedPercentage: 10.33,
   },
   render: (args) => (
     <div className="flex flex-col justify-center items-center">

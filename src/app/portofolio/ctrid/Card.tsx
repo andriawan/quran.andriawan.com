@@ -2,6 +2,7 @@ import clsx from "clsx";
 import TaxBadgeChart from "./TaxBadgeChart";
 import ChevronDown from "./ChevronDown";
 import { formatNumberDisplay, formatShortNumber } from "@/shared/utility";
+import { Popover } from "@base-ui-components/react";
 
 export interface CardProps {
   onClick?: () => void;
@@ -14,6 +15,7 @@ export interface CardProps {
   amounType: "default" | "currency" | "percentage";
   label?: string;
   percentage?: number | null;
+  comparedPercentage?: number | null;
   percentageState?: "negative" | "positive" | "neutral";
   currency?: string;
   isIncludeVat?: boolean;
@@ -28,6 +30,7 @@ export default function Card({
   label = "",
   amount = 0,
   percentage = 0,
+  comparedPercentage = 0,
   amounType = "default",
   currency = "IDR",
   amountClass = "",
@@ -110,14 +113,33 @@ export default function Card({
             </span>
           ) : (
             <>
-              <span className="leading-none" title={percentage?.toString()}>
-                {percentageState === "negative"
-                  ? "-"
-                  : percentageState === "positive"
-                    ? "+"
-                    : ""}
-                {formatNumberDisplay(percentage)}%
-              </span>
+              <Popover.Root openOnHover={true} delay={0}>
+                <Popover.Trigger>
+                  <span className="leading-none">
+                    {percentageState === "negative"
+                      ? "-"
+                      : percentageState === "positive"
+                        ? "+"
+                        : ""}
+                    {formatNumberDisplay(percentage)}%
+                  </span>
+                </Popover.Trigger>
+                <Popover.Portal>
+                  <Popover.Positioner sideOffset={10}>
+                    <Popover.Popup className={clsx("w-[150px]")}>
+                      <Popover.Description>
+                        <div className="flex flex-col items-end gap-2 bg-[#1E1F31] p-4 rounded border border-gray-600 text-white text-xs">
+                          <p>Today</p>
+                          <p>{formatNumberDisplay(percentage)}%</p>
+                          <p className="text-lg font-bold">VS</p>
+                          <p>Yesterday</p>
+                          <p>{formatNumberDisplay(comparedPercentage)}%</p>
+                        </div>
+                      </Popover.Description>
+                    </Popover.Popup>
+                  </Popover.Positioner>
+                </Popover.Portal>
+              </Popover.Root>
             </>
           )}
         </div>
