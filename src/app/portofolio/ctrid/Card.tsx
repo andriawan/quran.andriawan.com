@@ -87,9 +87,9 @@ export default function Card({
                 {amountMode === "short"
                   ? formatShortNumber(amount)
                   : formatNumberDisplay(amount)}
-                {amounType === "percentage" ? "%" : ""}
               </span>
               <span className="md:hidden">{formatShortNumber(amount)}</span>
+              <span>{amounType === "percentage" ? "%" : ""}</span>
             </>
           )}
         </p>
