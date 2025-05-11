@@ -25,15 +25,15 @@ export default function Chart({
   }, [width, onChartWidthChanged]);
   return isLoading ? (
     <>
-      <div className="flex justify-center items-end p-20 h-full gap-3">
+      <div className="flex justify-center items-end lg:p-8 p-5 h-full gap-1 lg:gap-3 w-full">
         {Array.from({ length: 20 }).map((_, index) => (
           <div
             key={`insert-${
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               index
             }`}
-            style={{ height: `${Math.random() * (110 - 40) + 40}%` }}
-            className="w-10 opacity-15 bg-slate-500 rounded-md animate-pulse"
+            style={{ height: `${Math.random() * (110 - 40) + 30}%` }}
+            className="lg:w-10 flex-1 opacity-15 bg-slate-500 rounded-sm lg:rounded-md animate-pulse"
           />
         ))}
       </div>
