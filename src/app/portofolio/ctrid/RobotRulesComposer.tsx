@@ -3,22 +3,25 @@ import ChevronDown from "./ChevronDown";
 import { useState } from "react";
 import LogicOperatorRobotRules from "./LogicOperator";
 import type { Rule } from "@/shared/entity/robot";
+import { atom, useAtom, type PrimitiveAtom } from "jotai";
+import type RuleCondition from "@/shared/entity/robot";
 
 export interface RobotRulesComposerProps {
   onRemove?: () => void;
-  rule: Rule;
-  onRobotRulesChange?: (rule: Rule) => void;
-  onRobotRulesListChange?: (rule: Rule) => void;
-  list: Rule[];
+  atomRule: PrimitiveAtom<Rule>;
 }
 
 export default function RobotRulesComposer({
   onRemove,
-  list,
-  rule,
-  onRobotRulesChange,
+  atomRule,
 }: RobotRulesComposerProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const atomRuleCondition = atom(
+    (get) => get(atomRule).condition,
+    (get, set, update: RuleCondition) => {
+      set(atomRule, { ...get(atomRule), condition: update });
+    },
+  );
+  const [rule, setRule] = useAtom(atomRule);
   return (
     <div
       className={clsx(
@@ -26,18 +29,20 @@ export default function RobotRulesComposer({
       )}
     >
       <div className="flex px-4 items-center gap-4">
-        <button type="button" onClick={() => setIsOpen(!isOpen)}>
+        <button
+          type="button"
+          onClick={() => setRule((prev) => ({ ...prev, open: !prev.open }))}
+        >
           <ChevronDown className="w-4 h-4 cursor-pointer" />
         </button>
         <button
           type="button"
           className="text-md flex-grow text-start"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setRule((prev) => ({ ...prev, open: !prev.open }))}
         >
-          <p>Rules 7 - Start Campaign with Budget and Conditions.</p>
+          <p>{rule.ruleName}</p>
           <p className={clsx("text-sm text-gray-400")}>
-            Start and set daily budget for good performing campaigns at the
-            start of the day
+            {rule.descriptionDetail}
           </p>
         </button>
         <button type="button" onClick={onRemove}>
@@ -63,7 +68,7 @@ export default function RobotRulesComposer({
           </svg>
         </button>
       </div>
-      {isOpen && (
+      {rule.open && (
         <div className="border-t mt-3 px-4 py-4 border-gray-700 gap-4 flex flex-col">
           <div className="flex items-center text-sm text-black bg-yellow-50 p-1 rounded border border-orange-400 justify-center gap-2">
             <svg
@@ -87,14 +92,12 @@ export default function RobotRulesComposer({
           <div className="bg-[#2B2D3A] text-center p-2 rounded">Condition:</div>
           <div className="w-full">
             <LogicOperatorRobotRules
-              list={list}
-              data={rule}
-              value={rule.operation}
-              onRuleChange={(rule) => onRobotRulesChange?.(rule)}
+              atomRuleCondition={atomRuleCondition}
               showBannerMaxCondition={() => {}}
               switchToCustom={() => {}}
               showBannerMaxLogic={() => {}}
             />
+            <pre>{JSON.stringify(rule, null, 2)}</pre>
           </div>
         </div>
       )}

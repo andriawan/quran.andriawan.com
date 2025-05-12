@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import RobotRulesComposer from "./RobotRulesComposer";
-import generateRandomRobotData from "@/shared/sample/robot";
-import { useState } from "react";
+import { generateRandomRulesDataWithJotai } from "@/shared/sample/rules";
 
 const meta: Meta<typeof RobotRulesComposer> = {
   component: RobotRulesComposer,
@@ -15,19 +14,12 @@ export const RobotRulesComposerSample: Story = {
     onRemove: () => {
       alert("remove");
     },
+    atomRule: generateRandomRulesDataWithJotai(),
   },
   render: (args) => {
-    const [robot, setRobotState] = useState(generateRandomRobotData());
     return (
       <div className="flex flex-col justify-center items-center max-w-4xl mx-auto">
-        <RobotRulesComposer
-          {...args}
-          list={robot.condition?.conditions ?? []}
-          onRobotRulesChange={(rule) => {
-            setRobotState({ ...robot, condition: rule });
-          }}
-          rule={robot.condition}
-        />
+        <RobotRulesComposer {...args} />
       </div>
     );
   },
