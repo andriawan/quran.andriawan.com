@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import type { Rule } from "../entity/robot";
+import { generateRandomString } from "../utility";
 
 export function generateRandomRulesDataWithJotai() {
   const rules: Rule[] = [
@@ -11,13 +12,21 @@ export function generateRandomRulesDataWithJotai() {
         "Start and set daily budget for good performing campaigns at the start of the day",
       action: ["start"],
       open: true,
-      id: "1",
+      id: generateRandomString(10),
       label: "Start Campaign with Budget and Conditions.",
       condition: {
+        id: generateRandomString(10),
         operation: "AND",
         conditions: [
           {
-            operation: undefined,
+            id: generateRandomString(10),
+            operation: 'AND',
+            value: '',
+            metricValue: '',
+          },
+          {
+            id: generateRandomString(10),
+            operation: 'AND',
             value: '',
             metricValue: '',
           }

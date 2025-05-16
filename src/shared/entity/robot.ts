@@ -13,6 +13,7 @@ export interface Rule {
 }
 
 export default interface RuleCondition {
+  id: string;
   operation?: operationType;
   value?: string;  
   metricValue?: string;
