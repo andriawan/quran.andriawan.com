@@ -21,6 +21,7 @@ interface SelectProps {
   autoOpenOnFocus?: boolean;
   triggerClassName?: string;
   popoverTriggerClassName?: string;
+  customWidthClassName?: string;
   placeholder?: string;
 }
 
@@ -32,6 +33,7 @@ export default function Select({
   autoOpenOnFocus,
   triggerClassName,
   popoverTriggerClassName,
+  customWidthClassName,
   placeholder,
 }: SelectProps) {
   const [search, setSearch] = useState("");
@@ -162,7 +164,8 @@ export default function Select({
         <div
           className={clsx(
             triggerClassName || "bg-[#1E1F31] data-[popup-open]:rounded-t w-0",
-            "truncate flex items-center p-2 px-3 min-w-[200px] text-white text-start",
+            customWidthClassName || "min-w-[200px]",
+            "truncate flex items-center p-2 px-3 text-white text-start",
           )}
         >
           <p className="flex-1 truncate" title={renderText(selected)}>
@@ -182,7 +185,7 @@ export default function Select({
           >
             <div className="max-h-[200px] overflow-y-auto flex flex-col">
               {withSearchInput && (
-                <Field.Root className="flex w-full max-w-64 flex-col items-start gap-1 sticky top-0 bg-[#1E1F31]">
+                <Field.Root className="flex w-full flex-col items-start gap-1 sticky top-0 bg-[#1E1F31]">
                   <Field.Control
                     required
                     value={search}
