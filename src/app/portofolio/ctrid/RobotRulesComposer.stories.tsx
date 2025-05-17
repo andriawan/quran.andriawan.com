@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import RobotRulesComposer from "./RobotRulesComposer";
-import { generateRandomRulesDataWithJotai } from "@/shared/sample/rules";
+import {
+  actionList,
+  clockParam,
+  daysParam,
+  generateRandomRulesDataWithJotai,
+  listMetric,
+  listSimbol,
+  listStatusCampaign,
+  periodParam,
+} from "@/shared/sample/rules";
 
 const meta: Meta<typeof RobotRulesComposer> = {
   component: RobotRulesComposer,
@@ -15,6 +24,14 @@ export const RobotRulesComposerSample: Story = {
       alert("remove");
     },
     atomRule: generateRandomRulesDataWithJotai(),
+    metrics: listMetric,
+    periods: periodParam,
+    statusCampaigns: listStatusCampaign,
+    days: daysParam,
+    clocks: clockParam,
+    comparations: listSimbol,
+    actionList: actionList,
+    isDebug: false,
   },
   render: (args) => {
     return (

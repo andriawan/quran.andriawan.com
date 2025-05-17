@@ -1,17 +1,25 @@
 import type RuleCondition from "@/shared/entity/robot";
+import { generateRandomString } from "@/shared/utility";
 import { Popover } from "@base-ui-components/react";
 import clsx from "clsx";
 import type { WritableAtom } from "jotai";
-import { useAtom, type PrimitiveAtom } from "jotai";
+import { useAtom } from "jotai";
 import React, { useState } from "react";
 
 export interface LogicOperatorRobotRulesProps {
-  atomRuleCondition: WritableAtom<RuleCondition, [update: RuleCondition], void>;
+  atomRuleCondition: WritableAtom<
+    RuleCondition | undefined,
+    [update: RuleCondition],
+    void
+  >;
   switchToCustom: () => void;
   showBannerMaxCondition: () => void;
   showBannerMaxLogic: () => void;
   customClass?: string;
   disableLogicMenu?: boolean;
+  level: number;
+  onLogicRemove?: () => void;
+  hideRemoveLogic?: boolean;
 }
 const LogicOperatorRobotRules = ({
   switchToCustom,
@@ -20,6 +28,9 @@ const LogicOperatorRobotRules = ({
   customClass = "",
   disableLogicMenu = false,
   atomRuleCondition,
+  level,
+  hideRemoveLogic,
+  onLogicRemove,
 }: LogicOperatorRobotRulesProps) => {
   const [isShownActionTooltip, setIsShownActionTooltip] = useState(false);
   const [ruleCondition, setRuleCondition] = useAtom(atomRuleCondition);
@@ -43,9 +54,10 @@ const LogicOperatorRobotRules = ({
   };
 
   const addCondition = (array: RuleCondition[] | undefined) => {
+    if (!ruleCondition) return;
     if (!array) return;
     if (!validateMaxTree(array)) return;
-    array.push({ metricValue: "" });
+    array.push({ metricValue: "", id: generateRandomString(10) });
     setRuleCondition({
       ...ruleCondition,
       conditions: array,
@@ -54,6 +66,7 @@ const LogicOperatorRobotRules = ({
   };
 
   const addLogic = (array: RuleCondition[] | undefined) => {
+    if (!ruleCondition) return;
     if (!array) return;
     if (!validateMaxTree(array)) return;
     if (disableLogicMenu) {
@@ -62,7 +75,11 @@ const LogicOperatorRobotRules = ({
     }
     array.push({
       operation: "OR",
-      conditions: [{ metricValue: "" }, { metricValue: "" }],
+      id: generateRandomString(10),
+      conditions: [
+        { metricValue: "", id: generateRandomString(10) },
+        { metricValue: "", id: generateRandomString(10) },
+      ],
     });
     setRuleCondition({
       ...ruleCondition,
@@ -75,9 +92,10 @@ const LogicOperatorRobotRules = ({
     <div
       className={clsx(
         "relative w-5 flex-none flex flex-col text-black items-center justify-center rounded-md",
+        level > 1 ? "h-full" : "",
         {
-          "bg-[#FF9304]": ruleCondition.operation === "AND",
-          "bg-white": ruleCondition.operation === "OR",
+          "bg-[#FF9304]": ruleCondition?.operation === "AND",
+          "bg-white": ruleCondition?.operation === "OR",
         },
         customClass,
       )}
@@ -109,7 +127,7 @@ const LogicOperatorRobotRules = ({
         className="flex-1 flex items-center cursor-pointer rotate-[270deg] py-2"
       >
         <p className="text-[12px] px-2 text-center">
-          {ruleCondition.operation}
+          {ruleCondition?.operation}
         </p>
       </button>
 
@@ -132,7 +150,7 @@ const LogicOperatorRobotRules = ({
       </button>
 
       {/* Tooltip Trigger */}
-      <Popover.Root openOnHover={true} delay={0}>
+      <Popover.Root delay={0}>
         <Popover.Trigger>
           <div
             onMouseEnter={() => setIsShownActionTooltip(true)}
@@ -141,50 +159,52 @@ const LogicOperatorRobotRules = ({
               "border-t mt-1 border-black cursor-pointer rounded-b-md w-5 h-5 flex justify-center items-center",
             )}
           >
-            <button type="button">
-              {!isShownActionTooltip ? (
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                  <title>Tooltip</title>
-                  <path
-                    d="M9.67 5.67H5.67V9.67H4.33V5.67H0.33V4.33H4.33V0.33H5.67V4.33H9.67V5.67Z"
-                    fill="black"
-                  />
-                </svg>
-              ) : (
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                  <title>Tooltip 2</title>
-                  <path
-                    d="M6.83 7.77L4 4.94L1.17 7.77L0.23 6.83L3.06 4L0.23 1.17L1.17 0.23L4 3.06L6.83 0.23L7.77 1.17L4.94 4L7.77 6.83L6.83 7.77Z"
-                    fill="black"
-                  />
-                </svg>
-              )}
-            </button>
+            {!isShownActionTooltip ? (
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <title>Tooltip</title>
+                <path
+                  d="M9.67 5.67H5.67V9.67H4.33V5.67H0.33V4.33H4.33V0.33H5.67V4.33H9.67V5.67Z"
+                  fill="black"
+                />
+              </svg>
+            ) : (
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                <title>Tooltip 2</title>
+                <path
+                  d="M6.83 7.77L4 4.94L1.17 7.77L0.23 6.83L3.06 4L0.23 1.17L1.17 0.23L4 3.06L6.83 0.23L7.77 1.17L4.94 4L7.77 6.83L6.83 7.77Z"
+                  fill="black"
+                />
+              </svg>
+            )}
           </div>
         </Popover.Trigger>
         <Popover.Portal>
-          <Popover.Positioner sideOffset={10}>
+          <Popover.Positioner>
             <Popover.Popup className={clsx("w-[150px]")}>
               <Popover.Description>
-                <div className="absolute bottom-[-60px] bg-white border rounded shadow-md p-2 text-[10px] w-[100px] text-black z-10">
-                  <Popover.Close>
-                    <button
-                      type="button"
-                      onClick={() => addCondition(ruleCondition.conditions)}
-                      className="cursor-pointer py-1 px-2 mb-1 rounded-md bg-logo-color"
-                    >
-                      Add condition
-                    </button>
+                <div className="absolute bottom-[-60px] bg-[#2B2D3A] rounded shadow-md p-2 text-[12px] w-[120px] text-neutral-50 z-10">
+                  <Popover.Close
+                    onClick={() => addCondition(ruleCondition?.conditions)}
+                    className="cursor-pointer py-1 px-2 mb-1 w-full"
+                  >
+                    Add condition
                   </Popover.Close>
-                  <Popover.Close>
-                    <button
-                      type="button"
-                      onClick={() => addLogic(ruleCondition.conditions)}
-                      className="cursor-pointer py-1 px-2 rounded-md bg-white"
+                  {level < 2 && (
+                    <Popover.Close
+                      onClick={() => addLogic(ruleCondition?.conditions)}
+                      className="cursor-pointer py-1 px-2 w-full"
                     >
                       Add logic
-                    </button>
-                  </Popover.Close>
+                    </Popover.Close>
+                  )}
+                  {level > 1 && !hideRemoveLogic && (
+                    <Popover.Close
+                      onClick={() => onLogicRemove?.()}
+                      className="cursor-pointer py-1 px-2 w-full"
+                    >
+                      Remove logic
+                    </Popover.Close>
+                  )}
                 </div>
               </Popover.Description>
             </Popover.Popup>

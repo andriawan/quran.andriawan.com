@@ -1,11 +1,13 @@
-export type operationType = "AND" | "OR";
-export type actionType = "start" | "set_daily_budget" | "restart" | "pause";
+import type { ItemListParams } from "@/app/components/Select";
 
+export type operationType = "AND" | "OR";
 export interface Rule {
   ruleName?: string;
   description?: string;
   descriptionDetail?: string;
-  action: actionType[]
+  action: string[];
+  actionText?: string;
+  actionId?: string;
   open?: boolean;
   id?: string;
   label?: string;
@@ -14,8 +16,18 @@ export interface Rule {
 
 export default interface RuleCondition {
   id: string;
-  operation?: operationType;
-  value?: string;  
+  operation?: operationType | string;
+  value?: string;
   metricValue?: string;
+  period?: string;
+  periodText?: string;
+  metricText?: string;
+  hour?: number | string;
+  minute?: number | string;
+  weekdays?: ItemListParams[];
+  operationText?: string;
+  timeText?: string;
+  timeValue?: string;
+  statusCampaignText?: string;
   conditions?: RuleCondition[];
 }
