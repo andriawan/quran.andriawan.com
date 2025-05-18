@@ -13,6 +13,8 @@ import {
 
 const meta: Meta<typeof RobotRulesComposer> = {
   component: RobotRulesComposer,
+  title: "Portofolio/ctr.id",
+  tags: ["autodocs"],
 };
 
 export default meta;

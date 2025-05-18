@@ -5,6 +5,8 @@ import { generateChartOption } from "@/shared/sample/chart";
 
 const meta: Meta<typeof PerformanceDashboard> = {
   component: PerformanceDashboard,
+  title: "Portofolio/ctr.id",
+  tags: ["autodocs"],
 };
 
 export default meta;

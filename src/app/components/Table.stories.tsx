@@ -4,6 +4,7 @@ import Table from "./Table";
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof Table> = {
   component: Table,
+  title: "Common Components/Table",
 };
 
 export default meta;

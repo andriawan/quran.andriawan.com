@@ -5,6 +5,7 @@ import { useState } from "react";
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof Select> = {
   component: Select,
+  title: "Common Components/Select",
 };
 
 export default meta;
@@ -53,6 +54,36 @@ export const SelectStory: Story = {
         id: "8",
         text: "Option 8",
         value: "option8",
+      },
+      {
+        id: "9",
+        text: "Option 9",
+        value: "option9",
+      },
+      {
+        id: "10",
+        text: "Option 10",
+        value: "option10",
+      },
+      {
+        id: "11",
+        text: "Option 11",
+        value: "option11",
+      },
+      {
+        id: "12",
+        text: "Option 12",
+        value: "option12",
+      },
+      {
+        id: "13",
+        text: "Option 13",
+        value: "option13",
+      },
+      {
+        id: "14",
+        text: "Option 14",
+        value: "option14",
       },
     ],
   },

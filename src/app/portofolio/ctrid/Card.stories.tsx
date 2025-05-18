@@ -4,6 +4,8 @@ import Card from "./Card";
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof Card> = {
   component: Card,
+  title: "Portofolio/ctr.id",
+  tags: ["autodocs"],
 };
 
 export default meta;

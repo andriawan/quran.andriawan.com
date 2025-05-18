@@ -5,6 +5,8 @@ import { generateChartOption } from "@/shared/sample/chart";
 //👇 This default export determines where your story goes in the story list
 const meta: Meta<typeof Chart> = {
   component: Chart,
+  title: "Portofolio/ctr.id",
+  tags: ["autodocs"],
 };
 
 export default meta;
