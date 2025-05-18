@@ -1,8 +1,9 @@
 import { Field, Popover } from "@base-ui-components/react";
 import clsx from "clsx";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ChevronDown from "../portofolio/ctrid/ChevronDown";
 import Check from "../portofolio/ctrid/Check";
+import { BottomSheet, type BottomSheetRef } from "react-spring-bottom-sheet";
 
 export interface ItemListParams {
   id: string;
@@ -43,7 +44,9 @@ export default function Select({
 }: SelectProps) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenBottomSheet, setIsOpenBottomSheet] = useState(false);
   const [isAutoFocusActive, setIsAutoFocusActive] = useState(true);
+  const bottomSheetRef = useRef<BottomSheetRef>(null);
 
   const filterData = data.filter((item) =>
     item.text.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
@@ -114,6 +117,7 @@ export default function Select({
     onSelected(item);
     if (!multiple) {
       setIsOpen(false);
+      setIsOpenBottomSheet(false);
     }
     setSearch("");
     setIsAutoFocusActive(false);
@@ -151,14 +155,95 @@ export default function Select({
     return selected.id === item.id;
   };
 
+  const triggerElement = (
+    <div
+      className={clsx(
+        disabled
+          ? disabledTriggerClassName || "bg-slate-600"
+          : triggerClassName || "bg-[#1E1F31] data-[popup-open]:rounded-t w-0",
+        customWidthClassName || "min-w-[200px]",
+        "truncate flex items-center p-2 px-3 text-white text-start",
+      )}
+    >
+      <p className="flex-1 truncate" title={renderText(selected)}>
+        {renderText(selected)}
+      </p>
+      <ChevronDown
+        className={clsx(
+          "w-4 h-4 cursor-pointer",
+          isOpen && !disabled && "rotate-180",
+        )}
+      />
+    </div>
+  );
+
   return (
     <Popover.Root
       delay={0}
       onOpenChange={(open) => {
         onOpenChangeBehavior(open);
+        setIsOpenBottomSheet(open);
       }}
       open={disabled ? false : isOpen}
     >
+      <button
+        type="button"
+        className={clsx(
+          popoverTriggerClassName,
+          customWidthClassName,
+          "lg:hidden w-full",
+        )}
+        onClick={() => {
+          setIsOpenBottomSheet(true);
+        }}
+      >
+        {triggerElement}
+      </button>
+      <BottomSheet
+        open={isOpenBottomSheet}
+        ref={bottomSheetRef}
+        defaultSnap={({ maxHeight }) => maxHeight / 2}
+        snapPoints={({ maxHeight }) => [
+          maxHeight - maxHeight / 10,
+          maxHeight / 4,
+          maxHeight * 0.6,
+        ]}
+        onDismiss={() => {
+          setIsOpenBottomSheet(false);
+        }}
+      >
+        <div className="flex flex-col gap-2 text-neutral-50 py-6">
+          {filterData.map((item) => {
+            return (
+              <button
+                className={clsx(
+                  "scroll-mt-[40px] px-3 group py-2 text-wrap cursor-pointer focus-within:outline-none",
+                  checkSelectedId(item)
+                    ? "bg-[#1f88b9] active-selection"
+                    : "focus-within:bg-[#00AFFF] hover:bg-[#00AFFF]",
+                )}
+                tabIndex={0}
+                type="button"
+                onKeyDown={(e) => {
+                  handleKeyboardInteractionList(e, item);
+                }}
+                onClick={() => {
+                  onSelectedBehavior(item);
+                }}
+                key={item.value}
+              >
+                <div className="flex items-center">
+                  <p className="text-start flex-1">{item.text}</p>
+                  {checkSelectedId(item) && <Check className="size-4" />}
+                </div>
+                <p className="text-sm text-start text-gray-400 group-hover:text-neutral-50 group-focus-within:text-neutral-50">
+                  {item.subText}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      </BottomSheet>
       <Popover.Trigger
         className={clsx(popoverTriggerClassName, customWidthClassName)}
         onBlur={() => setIsAutoFocusActive(true)}
@@ -168,30 +253,13 @@ export default function Select({
           }
         }}
       >
-        <div
-          className={clsx(
-            disabled
-              ? disabledTriggerClassName || "bg-slate-600"
-              : triggerClassName ||
-                  "bg-[#1E1F31] data-[popup-open]:rounded-t w-0",
-            customWidthClassName || "min-w-[200px]",
-            "truncate flex items-center p-2 px-3 text-white text-start",
-          )}
-        >
-          <p className="flex-1 truncate" title={renderText(selected)}>
-            {renderText(selected)}
-          </p>
-          <ChevronDown
-            className={clsx(
-              "w-4 h-4 cursor-pointer",
-              isOpen && !disabled && "rotate-180",
-            )}
-          />
-        </div>
+        <div className="hidden lg:block">{triggerElement}</div>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner
-          className={clsx("outline-none min-w-[200px] w-[var(--anchor-width)]")}
+          className={clsx(
+            "outline-none min-w-[200px] w-[var(--anchor-width)] hidden lg:block",
+          )}
         >
           <Popover.Popup
             className={clsx(" bg-[#1E1F31] text-white rounded-b flex flex-col")}
