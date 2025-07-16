@@ -51,8 +51,9 @@ export default function MetricsInput({
       autoOpenOnFocus
       data={metrics}
       onSelected={(item) => {
-        const newMetric: RuleCondition = {
-          id: generateRandomString(10),
+        if (!ruleCondition) return;
+        setRuleCondition({
+          ...ruleCondition,
           metricValue: item.value,
           value: "",
           metricText: item.text,
@@ -70,8 +71,7 @@ export default function MetricsInput({
           ...(item.metaData?.period !== undefined && {
             period: item.metaData?.period?.toString() ?? "",
           }),
-        };
-        setRuleCondition(newMetric);
+        });
       }}
       placeholder="Select Metrics..."
       selected={{
